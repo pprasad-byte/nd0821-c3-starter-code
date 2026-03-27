@@ -1,7 +1,7 @@
 # Script to train machine learning model.
 import logging
 from pathlib import Path
- 
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
@@ -14,7 +14,7 @@ from starter.ml.model import (
     save_model,
     train_model,
 )
- 
+
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
@@ -28,7 +28,8 @@ logger.info(f"Loading data from {DATA_PATH}")
 data = pd.read_csv(DATA_PATH)
 logger.info(f"Data shape: {data.shape}")
 
-# Optional enhancement, use K-fold cross validation instead of a train-test split.
+# Optional enhancement, use K-fold cross validation instead of a
+# train-test split.
 train, test = train_test_split(data, test_size=0.20)
 
 cat_features = [
@@ -54,7 +55,7 @@ X_test, y_test, _, _ = process_data(
     encoder=encoder,
     lb=lb,
 )
- 
+
 # Train and save a model.
 logger.info("Training model...")
 model = train_model(X_train, y_train)
@@ -65,21 +66,22 @@ precision, recall, f1 = compute_model_metrics(y_test, preds)
 logger.info(
     f"Overall — Precision: {precision:.4f}  Recall: {recall:.4f}  F1: {f1:.4f}"
 )
- 
+
 # Save artifacts.
 save_model(model, encoder, lb, MODEL_DIR)
 logger.info(f"Artifacts saved to {MODEL_DIR}")
- 
+
 # Compute and save slice metrics.
 logger.info("Computing slice metrics...")
+
 
 def compute_slice_metrics(test_df, feature):
     """
     Compute model metrics for every unique value of a given categorical feature.
- 
+
     For each unique value the feature is held fixed, the slice is processed in
     inference mode, and precision / recall / F1 are recorded.
- 
+
     Inputs
     ------
     test_df : pd.DataFrame
@@ -89,12 +91,12 @@ def compute_slice_metrics(test_df, feature):
     """
     loaded_model, loaded_encoder, loaded_lb = load_model(MODEL_DIR)
     results = []
- 
+
     for value in sorted(test_df[feature].unique()):
         slice_df = test_df[test_df[feature] == value]
         if slice_df.empty:
             continue
- 
+
         X_slice, y_slice, _, _ = process_data(
             slice_df,
             categorical_features=cat_features,
@@ -114,14 +116,14 @@ def compute_slice_metrics(test_df, feature):
             "f1": f1,
         })
     return results
- 
+
 
 all_results = []
 for feature in cat_features:
     results = compute_slice_metrics(test, feature)
     all_results.extend(results)
     logger.info(f"  {feature}: {len(results)} slices")
- 
+
 # Write slice output to file.
 with open(SLICE_OUTPUT, "w") as f:
     for r in all_results:
@@ -132,7 +134,6 @@ with open(SLICE_OUTPUT, "w") as f:
             f"Recall: {r['recall']:.4f}  "
             f"F1: {r['f1']:.4f}\n"
         )
- 
+
 logger.info(f"Slice output written to {SLICE_OUTPUT}")
 logger.info("Done.")
- 

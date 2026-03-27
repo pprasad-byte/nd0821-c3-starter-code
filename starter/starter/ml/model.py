@@ -1,11 +1,10 @@
 from sklearn.metrics import fbeta_score, precision_score, recall_score
 import logging
 from pathlib import Path
- 
+
 import joblib
 from sklearn.ensemble import RandomForestClassifier
 logger = logging.getLogger(__name__)
-
 
 
 def train_model(X_train, y_train):
@@ -30,7 +29,10 @@ def train_model(X_train, y_train):
         n_jobs=-1,
     )
     model.fit(X_train, y_train)
-    logger.info(f"Model trained on {X_train.shape[0]} samples, {X_train.shape[1]} features.")
+    logger.info(
+        f"Model trained on {
+            X_train.shape[0]} samples, {
+            X_train.shape[1]} features.")
     return model
 
 
@@ -82,7 +84,7 @@ def save_model(
 ) -> None:
     """
     Saves model, encoder, and label binarizer to disk via joblib.
- 
+
     Inputs
     ------
     model : RandomForestClassifier
@@ -93,17 +95,17 @@ def save_model(
     """
     model_dir = Path(model_dir)
     model_dir.mkdir(parents=True, exist_ok=True)
- 
+
     joblib.dump(model, model_dir / "model.pkl")
     joblib.dump(encoder, model_dir / "encoder.pkl")
     joblib.dump(lb, model_dir / "lb.pkl")
     logger.info(f"Artifacts saved to {model_dir}")
- 
- 
+
+
 def load_model(model_dir: Path) -> tuple:
     """
     Loads model, encoder, and label binarizer from disk.
- 
+
     Inputs
     ------
     model_dir : Path
