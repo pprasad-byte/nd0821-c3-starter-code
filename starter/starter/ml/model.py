@@ -3,7 +3,6 @@ import logging
 from pathlib import Path
  
 import joblib
-import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 logger = logging.getLogger(__name__)
 

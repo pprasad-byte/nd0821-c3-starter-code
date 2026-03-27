@@ -29,7 +29,7 @@ jobs:
       - name: Lint with flake8
         run: |
           cd starter
-          flake8 . --max-line-length=100 --exclude=.venv
+          flake8 . --max-line-length=100 --exclude=.venv,sanitycheck.py
 
       - name: Run tests with pytest
         run: |

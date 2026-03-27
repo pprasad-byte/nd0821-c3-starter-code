@@ -6,7 +6,6 @@ Covers the rubric requirements:
   - test_post_predict_low_income:  POST /predict returns <=50K
   - test_post_predict_high_income: POST /predict returns  >50K
 """
-import pytest
 from fastapi.testclient import TestClient
 
 from main import app
